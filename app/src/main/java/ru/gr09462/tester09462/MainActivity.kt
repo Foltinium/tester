@@ -5,21 +5,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import ru.gr09462.tester09462.ui.ResultScreen
 import ru.gr09462.tester09462.ui.TestCard
 import ru.gr09462.tester09462.ui.theme.Tester09462Theme
 
 class MainActivity : ComponentActivity() {
-
     private val vm by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,23 +36,48 @@ class MainActivity : ComponentActivity() {
             Tester09462Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(modifier = Modifier.padding(innerPadding)) {
-                        if (vm.currentCardNum < MainViewModel.maxCardsCount) {
+                        if (!vm.isFinished) {
                             LazyColumn(
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
-                                items(vm.cards.slice(0..if (vm.currentCardNum < MainViewModel.maxCardsCount) vm.currentCardNum else -1)) { cardState ->
+                                item {
+                                    Text(
+                                        "Тест по языку Java",
+                                        modifier = Modifier.fillMaxWidth(),
+                                        fontSize = 32.sp,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                                itemsIndexed(vm.cards.take(vm.currentCardNum + 1)) { index, cardState ->
                                     TestCard(
                                         cardState.card,
-                                        cardState.card.userAnswer?.toString() ?: vm.currentAnswer,
+                                        number = index + 1,
+                                        selectedOption = cardState.card.userAnswer ?: vm.selectedOption,
                                         isActive = cardState.isActive,
                                         cardColor = cardState.color,
-                                        onUserInput = vm::onUserInput,
+                                        onOptionSelected = vm::onOptionSelected,
                                         onAnswer = vm::onAnswer,
                                     )
                                 }
+                                item {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        Button(onClick = vm::finishTest) {
+                                            Text("Завершить тест")
+                                        }
+                                    }
+                                }
                             }
                         } else {
-                            Text("Тест финишд")
+                            ResultScreen(
+                                score = vm.score,
+                                total = MainViewModel.maxCardsCount,
+                                onRestart = vm::initCards,
+                            )
                         }
                     }
                 }
