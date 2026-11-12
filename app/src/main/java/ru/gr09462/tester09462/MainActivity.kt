@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +45,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 item {
                                     Text(
-                                        "Тест по языку Java",
+                                        stringResource(R.string.java_test),
                                         modifier = Modifier.fillMaxWidth(),
                                         fontSize = 32.sp,
                                         textAlign = TextAlign.Center,
@@ -67,7 +68,9 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier.fillMaxWidth(),
                                     ) {
                                         Button(onClick = vm::finishTest) {
-                                            Text("Завершить тест")
+                                            Text(
+                                                stringResource(R.string.finish_test)
+                                            )
                                         }
                                     }
                                 }

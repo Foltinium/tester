@@ -1,18 +1,10 @@
 package ru.gr09462.tester09462
 
-/**
- * Вопрос с вариантами ответа.
- * Текст вопроса хранится в ключе HashMap, поэтому здесь только варианты и номер верного.
- */
 data class Question(
     val options: List<String>,
     val correctIndex: Int,
 )
 
-/**
- * Банк из 100 вопросов по курсу «Основы Java».
- * Ключ — текст вопроса (должен быть уникальным), значение — варианты и индекс правильного (с нуля).
- */
 object QuestionBank {
     val questions: HashMap<String, Question> = hashMapOf(
 
